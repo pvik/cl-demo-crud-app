@@ -34,16 +34,16 @@
 	 :completed-date (unless (equal completed-date :null)
 					   (local-time:universal-to-timestamp completed-date)))))
 
-(defun get-todo (where-clause)
-  (let ((todo-i (postmodern:sql
-				 (:select 'id 'item 'note 'completed 'create_date 'completed_date
-						  :from *todo-table*
-						  :where (:= :id 5)))))
-	todo-i))
+(defmacro get-todo (&rest where-clause)
+  `(let ((todo-i (mapcar #'list-to-todo
+						 (postmodern:query
+						  (:select 'id 'item 'note 'completed 'create_date 'completed_date
+								   :from *todo-table*
+								   :where ,@where-clause)))))
+	 todo-i))
 
 (defun get-todo-by-id (id)
-  (let ((todo-i (first (get-todo `(:= id ,id)))))
-	(list-to-todo todo-i)))
+  (first (get-todo (:= 'id id))))
 
 (defmethod insert ((todo-i todo))
   (let* ((id             (todo-id todo-i))
