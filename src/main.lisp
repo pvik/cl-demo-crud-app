@@ -3,6 +3,8 @@
   (:export :main))
 (in-package :cl-demo-crud-app)
 
+(defun get-list )
+
 (defun app-read ()
   (let ((cmd (read-from-string
 			  (concatenate 'string "(" (read-line) ")"))))

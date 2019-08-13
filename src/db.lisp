@@ -17,17 +17,13 @@
 			  (postmodern:connect database username password host :pooled-p t))
 		(format t "~&Connected to ~a@~a/~a!" username host database))))
 
-(defun get-todo-by-id (id)
-  (let* ((todo (first (postmodern:query
-					   (:select 'id 'item 'note 'completed 'create_date 'completed_date
-								:from *todo-table*
-								:where (:= 'id id)))))
-		 (id             (first todo))
-		 (item           (second todo))
-		 (note           (third todo))
-		 (completed      (fourth todo))
-		 (created-date   (fifth todo))
-		 (completed-date (sixth todo)))
+(defun list-to-todo (todo-i)
+  (let ((id             (first todo-i))
+		(item           (second todo-i))
+		(note           (third todo-i))
+		(completed      (fourth todo-i))
+		(created-date   (fifth todo-i))
+		(completed-date (sixth todo-i)))
 	(make-todo
 	 :id             id
 	 :item           item
@@ -37,6 +33,17 @@
 					   (local-time:universal-to-timestamp created-date))
 	 :completed-date (unless (equal completed-date :null)
 					   (local-time:universal-to-timestamp completed-date)))))
+
+(defun get-todo (where-clause)
+  (let ((todo-i (postmodern:sql
+				 (:select 'id 'item 'note 'completed 'create_date 'completed_date
+						  :from *todo-table*
+						  :where (:= :id 5)))))
+	todo-i))
+
+(defun get-todo-by-id (id)
+  (let ((todo-i (first (get-todo `(:= id ,id)))))
+	(list-to-todo todo-i)))
 
 (defmethod insert ((todo-i todo))
   (let* ((id             (todo-id todo-i))
