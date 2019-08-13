@@ -1,6 +1,10 @@
 (defpackage db
   (:use :cl :postmodern :local-time)
-  (:export :connect))
+  (:export :todo-p :make-todo :todo-id :todo-item :todo-note :todo-completed :todo-created-date :todo-completed-date
+		   :connect-db
+		   :get-todo-by-id :get-todo-by-completed
+		   :insert))
+
 (in-package :db)
 
 (defvar *todo-table* 'sample.todo)
@@ -8,7 +12,7 @@
 (defstruct todo
   id item note completed created-date completed-date)
 
-(defun connect (host username password database)  
+(defun connect-db (host username password database)  
   (if (and postmodern:*database*
 		   (postmodern:connected-p postmodern:*database*))
 	  (format t "Already connected to a DB!~%")
@@ -45,6 +49,9 @@
 (defun get-todo-by-id (id)
   (first (get-todo (:= 'id id))))
 
+(defun get-todo-by-completed (tf)
+  (get-todo (:= 'completed tf)))
+
 (defmethod insert ((todo-i todo))
   (let* ((id             (todo-id todo-i))
 		 (item           (todo-item todo-i))
@@ -71,13 +78,20 @@
 					'item item 'note note 'completed completed
 					'create_date created-date
 					'completed_date completed-date
-					:where (:= 'id id))))
+					:where (:= 'id id)))
+		  todo-i)
 		;; insert record
 		(progn
 		  (format t "inserting ~a~&" item)
-		  (postmodern:query
-		   (:insert-into *todo-table*
-						 :set
-						 'item item 'note note 'completed completed
-						 'create_date created-date
-						 'completed_date completed-date))))))
+		  (let ((inserted-id (postmodern:query
+							  (:insert-into *todo-table*
+											:set
+											'item '$1 'note '$2 'completed '$3
+											'create_date '$4
+											'completed_date '$5
+											:returning 'id)
+							  item note completed
+							  created-date completed-date
+							  :single)))
+			(format t "Created Todo ~d~&" inserted-id)
+			(get-todo-by-id inserted-id))))))
