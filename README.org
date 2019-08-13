@@ -1,12 +1,10 @@
-* First-App 
+* CL-Demo-CRUD-App
+
+A sample CRUD application written in Common Lisp.
 
 ** Usage
 
 ** Installation
-
-** Author
-
-+ pvik
 
 ** Copyright
 
