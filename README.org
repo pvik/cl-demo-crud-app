@@ -4,11 +4,9 @@ A sample CRUD application written in Common Lisp.
 
 ** Usage
 
-** Installation
-
 ** Copyright
 
-Copyright (c) 2019 pvik
+Copyright (c) 2019 Praveen Vikram
 
 ** License
 
