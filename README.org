@@ -4,7 +4,7 @@ A sample CRUD application written in Common Lisp.
 
 ** Usage
 
-Please check out [this](https://pvik.github.io/blog/clojure-to-common-lisp-part-3-sample-crud-app/) blog post for details about this project.
+   Please check out [[https://pvik.github.io/blog/clojure-to-common-lisp-part-3-sample-crud-app/][this]] blog post for details about this project.
 
 ** Copyright
 
